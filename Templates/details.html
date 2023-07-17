@@ -1,0 +1,16 @@
+
+
+{% extends 'Base.html' %}
+
+{% block title%} Details {% endblock %}
+
+{% block nav %}
+<li><a href='{% url "update" snack.id  %}'>UPDATE SNACKS</a></li>
+<li><a href='{% url "delete" snack.id %}'>DELETE SNACKS</a></li>
+{% endblock %}
+
+{% block content %}
+    <h3>Title: {{snack.title}} </h3>
+    <h3>Purchaser: {{snack.purchaser}} </h3>
+    <h3>Description: {{snack.description}} </h3>
+{% endblock%}
