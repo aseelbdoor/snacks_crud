@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from .models import Snack
-from django.urls import reverse
+from django.urls import reverse,reverse_lazy
 
 class SnacksTest(TestCase):
     def setUp(self):
@@ -27,12 +27,34 @@ class SnacksTest(TestCase):
 
     def test_create_view(self):
         url = reverse('create')
-        data = {
+        data={
             "title": "test_2",
-            "purchaser": self.user.id
+            "purchaser" : self.user.id,
+            "description": "there is no description"
         }
 
-        response = self.client.post(path=url, data=data, follow=True)
-        self.assertTemplateUsed(response, 'createSnacks.html')
-        self.assertEqual(len(Snack.objects.all()), 1)
-        self.assertRedirects(response, reverse('create', args=[1]))
+        response = self.client.post(path=url,data = data,follow = True)
+        self.assertTemplateUsed(response,'details.html')
+        self.assertEqual(len(Snack.objects.all()),2)
+        self.assertRedirects(response, reverse('details',args=[2]))
+    
+
+    def test_delete_view(self):
+        url = reverse('delete',args=[self.snack.id])
+        response = self.client.post(path=url,follow = True)
+        self.assertTemplateUsed(response,'home.html')
+        self.assertEqual(len(Snack.objects.all()),0)
+        self.assertRedirects(response, reverse('home'))
+        
+        
+    def test_update_view(self):
+        url = reverse('update',args=[self.snack.id])
+        data={
+            "title": "test_2",
+            "purchaser" : self.user.id,
+            "description": "there is no description"
+        }
+        response = self.client.post(path=url,data = data,follow = True)
+        self.assertTemplateUsed(response,'home.html')
+        self.assertEqual(len(Snack.objects.all()),1)
+        self.assertRedirects(response, reverse('home'))   
